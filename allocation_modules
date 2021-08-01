@@ -1,0 +1,47 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Jul 13 10:44:15 2021
+
+@author: krunal
+"""
+
+
+import pandas as pd
+import numpy as np
+
+def alloc_type_single(alloc_df,allocFromColNum,allocToColNum):
+    
+    allocFromColName = alloc_df.columns[allocFromColNum]
+    allocToColName = alloc_df.columns[allocToColNum]
+    
+    alloc_df['cumsum'] = alloc_df[allocToColName].cumsum()       
+    alloc_df['working'] = alloc_df[allocFromColName] - alloc_df['cumsum']
+    alloc_df['alloc'] = np.where(alloc_df['working'] > 0,\
+                                    alloc_df[allocToColName],\
+                                    alloc_df[allocToColName]+alloc_df['working'])
+        
+    alloc_df['alloc'] = np.where(alloc_df['alloc']>0,\
+                                    alloc_df['alloc'],\
+                                                    0)  
+        
+    return(alloc_df)
+
+
+def alloc_type_multiple(alloc_df,allocFromColNum,allocToColNum,levels=[]):
+    
+    allocFromColName = alloc_df.columns[allocFromColNum]
+    allocToColName = alloc_df.columns[allocToColNum]
+    group_by_cols = [alloc_df.columns[i] for i in levels]    
+    
+    # print(group_by_cols)
+    alloc_df['cumsum'] = alloc_df.groupby(group_by_cols)[allocToColName].transform('cumsum')      
+    alloc_df['working'] = alloc_df[allocFromColName] - alloc_df['cumsum']
+    alloc_df['alloc'] = np.where(alloc_df['working'] > 0,\
+                                    alloc_df[allocToColName],\
+                                    alloc_df[allocToColName]+alloc_df['working'])
+        
+    alloc_df['alloc'] = np.where(alloc_df['alloc']>0,\
+                                    alloc_df['alloc'],\
+                                                    0)  
+        
+    return(alloc_df)
