@@ -1,0 +1,45 @@
+# -*- coding: utf-8 -*-
+"""
+@author: Krunal
+"""
+
+
+def colInfofunc(df):
+    # Column data types
+    colDataType = df.dtypes.tolist()
+    
+    # Column names
+    colNames = df.columns.tolist()    
+
+    # Counting missing values
+    missingVal = df.isna().sum().tolist()
+
+    # Counting unique values in each column
+    uniqNum = df.nunique().tolist()
+
+    # Displaying unique values in each column
+    uniqVals = pd.Series([])
+
+    i = 0
+    for col in df.columns:
+        series = df[col]
+        if series.nunique() <= 20:
+            uniqVals[i] = series.unique()
+        else:
+            uniqVals[i] = 0
+        i = i + 1
+ 
+    uniqVals = list(uniqVals)
+
+    # Combining lists generated above
+    zipList = list(zip(colNames,colDataType,missingVal,uniqNum,uniqVals))
+    colInfo = pd.DataFrame(zipList,columns=["ColNames","ColDataType","MissingVal","UniqNum","UniqVals"])
+    return colInfo
+
+def reorder_columns(df_columns):
+    reord_col = [int(numeric_string) for numeric_string in df_columns[1:].values]
+    sorted_col = np.sort(reord_col)
+    sorted_col_str = [df_columns[0]]
+    sorted_col_str_all = [str(x) for x in sorted_col]
+    [sorted_col_str.append(x) for x in sorted_col_str_all]
+    return sorted_col_str
