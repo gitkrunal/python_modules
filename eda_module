@@ -35,11 +35,3 @@ def colInfofunc(df):
     zipList = list(zip(colNames,colDataType,missingVal,uniqNum,uniqVals))
     colInfo = pd.DataFrame(zipList,columns=["ColNames","ColDataType","MissingVal","UniqNum","UniqVals"])
     return colInfo
-
-def reorder_columns(df_columns):
-    reord_col = [int(numeric_string) for numeric_string in df_columns[1:].values]
-    sorted_col = np.sort(reord_col)
-    sorted_col_str = [df_columns[0]]
-    sorted_col_str_all = [str(x) for x in sorted_col]
-    [sorted_col_str.append(x) for x in sorted_col_str_all]
-    return sorted_col_str
